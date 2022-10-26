@@ -16,9 +16,23 @@
 <div class="container">
   <div class="row">
     <div class="col-12">
-      <form action="{{ route('admin.posts.store') }}" method="POST">
+      <form action="{{ route('admin.posts.store') }}" method="POST" enctype="multipart/form-data">
 
         @csrf
+
+        <div class="form-group">
+          <label for="title">Titolo</label>
+          <div class="custom-file @error('image') is-invalid @endif">
+            <input type="file" name="image" class="custom-file-input" id="image" required>
+            <label class="custom-file-label" for="image">Choose file...</label>
+            <!--<div class="invalid-feedback">Example invalid custom file feedback</div>-->
+            @error('title')
+            <div id="image" class="invalid-feedback">
+              {{$message}}
+            </div>
+            @enderror
+          </div>
+        </div>
 
         <div class="form-group">
           <label for="title">Titolo</label>

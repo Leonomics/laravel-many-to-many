@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Post;
 use App\Tag;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class PostController extends Controller
@@ -48,9 +49,11 @@ class PostController extends Controller
             'title' => 'required|max:255|min:5',
             'content' => 'required',
             'category_id' => 'nullable|exists:categories,id',
-            'tags' => 'exists:tags,id'
+            'tags' => 'exists:tags,id',
+            'image'=> 'nullable|image|max:2048'
         ]);
 
+        $img_path = Storage::put('uploads', $params['image']);
         $params['slug'] = Post::getUniqueSlugFrom($params['title']);
 
         $post = Post::create($params);
