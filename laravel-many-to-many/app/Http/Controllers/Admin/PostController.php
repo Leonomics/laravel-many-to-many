@@ -48,7 +48,7 @@ class PostController extends Controller
             'title' => 'required|max:255|min:5',
             'content' => 'required',
             'category_id' => 'nullable|exists:categories,id',
-            'tags' => 'nullable|exists:tag,id'
+            'tags' => 'exists:tags,id'
         ]);
 
         $params['slug'] = Post::getUniqueSlugFrom($params['title']);
@@ -57,6 +57,7 @@ class PostController extends Controller
 
         if(array_key_exists('tags', $params)){
             $tags=$params['tags'];
+            $post->tags()->sync($tags);
         }
 
         return redirect()->route('admin.posts.show', $post);
