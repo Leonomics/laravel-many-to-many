@@ -6,7 +6,7 @@
   <div class="row">
     @if($post->cover)
       <div class="col-12">
-        <img src="{{asset('storage/'.$post->cover)}}" width="400" height="400" height="auto" alt="">
+        <img src="{{asset('storage/'.$post->cover)}}" width="400" height="auto" alt="">
       </div>
     @endif
     <div class="col-8">
