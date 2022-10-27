@@ -4,6 +4,11 @@
 
 <div class="container">
   <div class="row">
+    @if($post->cover)
+      <div class="col-12">
+        <img src="{{asset('storage/'.$post->cover)}}" width="400" height="400" height="auto" alt="">
+      </div>
+    @endif
     <div class="col-8">
       <h1>{{ $post->title }}</h1>
       <p>{{ $post->slug }}</p>
@@ -20,7 +25,7 @@
     <div class="col-4 text-left d-flex justify-content-end align-items-center">
       <a href="{{ route('admin.posts.edit',$post) }}" type="button" class="btn btn-primary btn-sm">Modifica</a>
       <form action="{{ route('admin.posts.destroy',$post) }}" method="POST">
-      
+
         @csrf
         @method('DELETE')
 

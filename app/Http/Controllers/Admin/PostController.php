@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Admin;
 
 use App\Category;
 use App\Http\Controllers\Controller;
+use App\Mail\SendPostCreatedMail;
 use App\Post;
 use App\Tag;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -53,8 +55,13 @@ class PostController extends Controller
             'image'=> 'nullable|image|max:2048'
         ]);
 
-        $img_path = Storage::put('uploads', $params['image']);
+
         $params['slug'] = Post::getUniqueSlugFrom($params['title']);
+
+        if(array_key_exists('image', $params)){
+            $img_path = Storage::put('uploads', $params['image']);
+            $params['cover'] = $img_path;
+        }
 
         $post = Post::create($params);
 
@@ -62,6 +69,8 @@ class PostController extends Controller
             $tags=$params['tags'];
             $post->tags()->sync($tags);
         }
+
+        Mail::to($request->user())->send(new SendPostCreatedMail($post));
 
         return redirect()->route('admin.posts.show', $post);
     }
@@ -123,6 +132,12 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
+
+        $cover = $post->cover;
+        $post->delete();
+        if($post->cover && Storage::exists($cover)){
+            Storage::delete($cover);
+        }
         $post->delete();
 
         return redirect()->route('admin.posts.index');
